@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev --poll src/server.ts"
+    "start": "ts-node-dev --poll src/server.ts",
+    "build": "tsc",
+    "deploy": "node dist/server.js"
   },
   "keywords": [],
   "author": "",

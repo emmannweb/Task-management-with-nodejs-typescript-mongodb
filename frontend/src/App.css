@@ -1,0 +1,27 @@
+ body {
+   margin: 0px;
+   padding: 0px;
+ }
+
+ /* width */
+ ::-webkit-scrollbar {
+   width: 8px;
+ }
+
+ /* Track */
+ ::-webkit-scrollbar-track {
+   background: #e0e0e0
+     /*"#e0e0e0";*/
+ }
+
+ /* Handle */
+ ::-webkit-scrollbar-thumb {
+   background: #fcca50;
+   opacity: 8;
+   /* #888;*/
+ }
+
+ /* Handle on hover */
+ ::-webkit-scrollbar-thumb:hover {
+   background: #555;
+ }
