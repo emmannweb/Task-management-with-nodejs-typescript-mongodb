@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./backend/dist",
+    "rootDir": "./backend/src",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    //"allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "./backend/src/**/*",
+    "env.d.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    ".vscode"
+  ]
+}
+

@@ -1,0 +1,16 @@
+- https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html
+
+Init TypeScript Project
+- tsc --init
+
+-Dependencies
+npm i bcryptjs body-parser cookie-parser cors dotenv express express-mongo-sanitize express-rate-limit helmet jsonwebtoken mongoose morgan nodemailer 
+
+-Dev Dependencies
+ npm i --save-dev @types/body-parser @types/cookie-parser @types/cors @types/express @types/jsonwebtoken @types/morgan @types/node ts-node-dev typescript  
+
+- Define Types for process.env in TypeScript
+ https://medium.com/@glasshost/define-types-for-process-env-in-typescript-c89b3c8ffbb2
+
+- Create DATABASE in the cloud
+https://www.youtube.com/watch?v=_FJMRSlHh8k   / timestamps 11.21

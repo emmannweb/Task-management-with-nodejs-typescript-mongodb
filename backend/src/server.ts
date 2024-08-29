@@ -11,7 +11,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-
+app.set("trust proxy", 1);
 //test route
 // app.get("/", (req: Request, res: Response) => {
 //   res.send("Hello from Node js");

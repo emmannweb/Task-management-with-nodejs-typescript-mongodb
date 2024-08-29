@@ -1,6 +1,10 @@
 /backend/node_modules
 /backend/.env
 /backend/package-lock.json
+/deploy/package-lock.json
+/deploy/node_modules
+/deploy/frontend/node_modules
+/deploy/.env
 /frontend/node_modules
 /frontend/package-lock.json
 /frontend/build
