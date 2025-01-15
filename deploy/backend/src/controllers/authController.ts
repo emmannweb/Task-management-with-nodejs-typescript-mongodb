@@ -106,7 +106,7 @@ export const userProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = await User.findById(req.user?.id as IUser).select("-password");
+  const user = await User.findById(req.user?.id).select("-password");
   res.status(200).json({
     success: true,
     user,
