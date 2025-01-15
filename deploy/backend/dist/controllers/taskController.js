@@ -9,12 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-let Task = require("../models/taskModel");
+exports.showTasks = exports.deleteTask = exports.updateTask = exports.myTask = exports.singleTask = exports.createTask = void 0;
+const taskModel_1 = require("../models/taskModel");
 //create task
-exports.createTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const createTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, description, priority, stage, attributed } = req.body;
-        const task = yield Task.create({
+        const task = yield taskModel_1.Task.create({
             title,
             description,
             priority,
@@ -31,10 +32,11 @@ exports.createTask = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         return next(error);
     }
 });
+exports.createTask = createTask;
 //single task
-exports.singleTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const singleTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const task = yield Task.findById(req.params.task_id).populate("attributed", "firstName");
+        const task = yield taskModel_1.Task.findById(req.params.task_id).populate("attributed", "firstName");
         res.status(200).json({
             success: true,
             task,
@@ -45,11 +47,12 @@ exports.singleTask = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         return next(error);
     }
 });
+exports.singleTask = singleTask;
 //all my tasks
-exports.myTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const myTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const tasks = yield Task.find({ attributed: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id }).populate("attributed", "firstName");
+        const tasks = yield taskModel_1.Task.find({ attributed: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id }).populate("attributed", "firstName");
         res.status(200).json({
             success: true,
             tasks,
@@ -60,10 +63,11 @@ exports.myTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         return next(error);
     }
 });
+exports.myTask = myTask;
 //update task by id
-exports.updateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const task = yield Task.findByIdAndUpdate(req.params.task_id, req.body, {
+        const task = yield taskModel_1.Task.findByIdAndUpdate(req.params.task_id, req.body, {
             new: true,
         }).populate("attributed", "firstName");
         res.status(200).json({
@@ -76,10 +80,11 @@ exports.updateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         return next(error);
     }
 });
+exports.updateTask = updateTask;
 //delete task by id
-exports.deleteTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const task = yield Task.findByIdAndDelete(req.params.task_id);
+        const task = yield taskModel_1.Task.findByIdAndDelete(req.params.task_id);
         res.status(200).json({
             success: true,
             message: "task deleted",
@@ -90,8 +95,9 @@ exports.deleteTask = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         return next(error);
     }
 });
+exports.deleteTask = deleteTask;
 //show tasks
-exports.showTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const showTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //enable search
         const keyword = req.query.keyword
@@ -104,7 +110,7 @@ exports.showTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
             : {};
         //enable stage filter
         const allStages = [];
-        const stages = yield Task.aggregate([
+        const stages = yield taskModel_1.Task.aggregate([
             {
                 $project: {
                     stage: 1,
@@ -126,7 +132,7 @@ exports.showTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         const stageFilter = qstage ? qstage.split(",") : allStages;
         //Task by priority
         const priorities = [];
-        const taskByPriority = yield Task.find({}, { priority: 1 });
+        const taskByPriority = yield taskModel_1.Task.find({}, { priority: 1 });
         taskByPriority.forEach((val) => {
             priorities.push(val.priority);
         });
@@ -136,10 +142,10 @@ exports.showTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         //enable pagination
         const pageSize = 4;
         const page = Number(req.query.pageNumber) || 1;
-        const count = yield Task.find(Object.assign(Object.assign({}, keyword), { stage: { $in: [...stageFilter] }, priority: PriorityFilter })).countDocuments();
+        const count = yield taskModel_1.Task.find(Object.assign(Object.assign({}, keyword), { stage: { $in: [...stageFilter] }, priority: PriorityFilter })).countDocuments();
         //stat for task
-        const countStat = yield Task.find({}).countDocuments();
-        const tasks = yield Task.find(Object.assign(Object.assign({}, keyword), { stage: { $in: [...stageFilter] }, priority: PriorityFilter }))
+        const countStat = yield taskModel_1.Task.find({}).countDocuments();
+        const tasks = yield taskModel_1.Task.find(Object.assign(Object.assign({}, keyword), { stage: { $in: [...stageFilter] }, priority: PriorityFilter }))
             .sort({ createdAt: -1 })
             .populate("attributed", "firstName")
             .skip(pageSize * (page - 1))
@@ -160,3 +166,4 @@ exports.showTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return next(error);
     }
 });
+exports.showTasks = showTasks;

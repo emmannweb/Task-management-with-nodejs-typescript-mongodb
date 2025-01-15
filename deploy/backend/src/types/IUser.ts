@@ -7,12 +7,12 @@ export interface IUser extends Document {
   password: string;
   role: string;
   active: boolean;
-  resetPasswordToken: string;
-  resetPasswordExpire: Date;
+  resetPasswordToken: string | undefined;
+  resetPasswordExpire: Date | undefined;
 }
 
 export interface IUserDocument extends IUser, Document {
-  comparePassword: () => Promise<boolean>;
+  comparePassword: (password: string) => Promise<boolean>;
   getJwtToken: () => string;
   getResetPasswordToken: () => string;
 }

@@ -1,9 +1,8 @@
-let Task = require("../models/taskModel");
+import { Task } from "../models/taskModel";
 import { NextFunction, Request, Response } from "express";
-import { CustomRequest } from "../middleware/auth";
 
 //create task
-exports.createTask = async (
+export const createTask = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -29,7 +28,7 @@ exports.createTask = async (
 };
 
 //single task
-exports.singleTask = async (
+export const singleTask = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -51,8 +50,8 @@ exports.singleTask = async (
 };
 
 //all my tasks
-exports.myTask = async (
-  req: CustomRequest,
+export const myTask = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -72,7 +71,7 @@ exports.myTask = async (
 };
 
 //update task by id
-exports.updateTask = async (
+export const updateTask = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -93,7 +92,7 @@ exports.updateTask = async (
 };
 
 //delete task by id
-exports.deleteTask = async (
+export const deleteTask = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -112,7 +111,11 @@ exports.deleteTask = async (
 };
 
 //show tasks
-exports.showTasks = async (req: Request, res: Response, next: NextFunction) => {
+export const showTasks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     //enable search
     const keyword = req.query.keyword
@@ -164,7 +167,7 @@ exports.showTasks = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const taskByPriority = await Task.find({}, { priority: 1 });
-    taskByPriority.forEach((val: IPriority) => {
+    taskByPriority.forEach((val) => {
       priorities.push(val.priority);
     });
 

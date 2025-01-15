@@ -1,10 +1,12 @@
 /backend/node_modules
 /backend/.env
+/backend/src/routes/test.http
 /backend/package-lock.json
 /deploy/package-lock.json
 /deploy/node_modules
 /deploy/frontend/node_modules
 /deploy/.env
+/deploy/backend/src/routes/test.http
 /frontend/node_modules
 /frontend/package-lock.json
 /frontend/build

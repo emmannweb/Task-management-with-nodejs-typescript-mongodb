@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-let User = require("../models/userModel");
+import { User } from "../models/userModel";
 
 //load all users
-exports.allUsers = async (req: Request, res: Response, next: NextFunction) => {
+export const allUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const users = await User.find().sort({ createdAt: -1 }).select("-password");
     res.status(200).json({
@@ -16,7 +20,7 @@ exports.allUsers = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 //show single user
-exports.singleUser = async (
+export const singleUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -34,7 +38,11 @@ exports.singleUser = async (
 };
 
 //edit single user
-exports.editUser = async (req: Request, res: Response, next: NextFunction) => {
+export const editUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -51,7 +59,7 @@ exports.editUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 //delete user
-exports.deleteUser = async (
+export const deleteUser = async (
   req: Request,
   res: Response,
   next: NextFunction

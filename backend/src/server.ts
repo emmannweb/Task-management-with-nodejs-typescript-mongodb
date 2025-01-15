@@ -16,12 +16,11 @@ app.set("trust proxy", 1);
 // app.get("/", (req: Request, res: Response) => {
 //   res.send("Hello from Node js");
 // });
-
+import { errorHandler } from "./middleware/error";
 // import routes
-let handleError = require("./middleware/error");
-let authRoutes = require("./routes/authRoute");
-let userRoutes = require("./routes/userRoute");
-let taskRoutes = require("./routes/taskRoute");
+import { authRoutes } from "./routes/authRoute";
+import { userRoutes } from "./routes/userRoute";
+import { taskRoutes } from "./routes/taskRoute";
 
 mongoose
   .connect(process.env.DATABASE!)
@@ -68,14 +67,14 @@ app.use("/api", userRoutes);
 app.use("/api", taskRoutes);
 
 //error middleware
-app.use(handleError);
+app.use(errorHandler);
 
 __dirname = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/build")));
 
-  app.get("*", (req, res) =>
+  app.get("*", (req: Request, res: Response) =>
     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
   );
 } else {

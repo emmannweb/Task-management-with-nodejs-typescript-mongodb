@@ -1,16 +1,19 @@
 import { NextFunction, Request, Response } from "express";
-import { IUserDocument } from "../types/IUser";
-import { CustomRequest } from "../middleware/auth";
-let User = require("../models/userModel");
-let errorResponse = require("../utils/errorResponse");
-let sendEmail = require("../utils/sendEmail");
+import { IUser, IUserDocument } from "../types/IUser";
+import { User } from "../models/userModel";
+import { ErrorResponse } from "../utils/errorResponse";
+import { sendEmail } from "../utils/sendEmail";
 import * as crypto from "crypto";
 
-exports.signup = async (req: Request, res: Response, next: NextFunction) => {
+export const signup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email } = req.body;
   const userExist = await User.findOne({ email });
   if (userExist) {
-    return next(new errorResponse("E-mail already registred", 400));
+    return next(new ErrorResponse("E-mail already registred", 400));
   }
   try {
     req.body.role = "user"; // this is to prevent anyone creating an admin user.
@@ -25,27 +28,31 @@ exports.signup = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-exports.signin = async (req: Request, res: Response, next: NextFunction) => {
+export const signin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, password } = req.body;
     //validation
     if (!email) {
-      return next(new errorResponse("please add email", 403));
+      return next(new ErrorResponse("please add email", 403));
     }
     if (!password) {
-      return next(new errorResponse("Please add  password", 403));
+      return next(new ErrorResponse("Please add  password", 403));
     }
 
     //check user email
     const user = await User.findOne({ email });
     if (!user) {
-      return next(new errorResponse("Invalid credentials", 400));
+      return next(new ErrorResponse("Invalid credentials", 400));
     }
 
     //check password
     const isMatched = await user.comparePassword(password);
     if (!isMatched) {
-      return next(new errorResponse("Invalid credentials", 400));
+      return next(new ErrorResponse("Invalid credentials", 400));
     }
 
     sendTokenResponse(user, 200, res);
@@ -81,7 +88,11 @@ const sendTokenResponse = async (
 };
 
 //log out
-exports.logout = async (req: Request, res: Response, next: NextFunction) => {
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   res.clearCookie("token");
   res.status(200).json({
     success: true,
@@ -90,12 +101,12 @@ exports.logout = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 //user profile
-exports.userProfile = async (
-  req: CustomRequest,
+export const userProfile = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const user = await User.findById(req.user?.id).select("-password");
+  const user = await User.findById(req.user?.id as IUser).select("-password");
   res.status(200).json({
     success: true,
     user,
@@ -103,14 +114,14 @@ exports.userProfile = async (
 };
 
 //FORGET PASSWORD
-exports.forgetPassword = async (
+export const forgetPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return next(new errorResponse("there is no user with this e-mail", 404));
+    return next(new ErrorResponse("there is no user with this e-mail", 404));
   }
 
   // get reset token
@@ -148,7 +159,7 @@ exports.forgetPassword = async (
 };
 
 //RESET PASSWORD
-exports.resetPassword = async (
+export const resetPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -165,7 +176,7 @@ exports.resetPassword = async (
       resetPasswordExpire: { $gt: Date.now() },
     });
     if (!user) {
-      return next(new errorResponse("Link expired", 400));
+      return next(new ErrorResponse("Link expired", 400));
     }
 
     // set new password

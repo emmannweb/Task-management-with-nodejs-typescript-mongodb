@@ -1,4 +1,4 @@
-class ErrorResponse extends Error {
+export class ErrorResponse extends Error {
   public readonly codeStatus: number;
 
   constructor(message: string, codeStatus: number) {
@@ -8,5 +8,3 @@ class ErrorResponse extends Error {
     Error.captureStackTrace(this);
   }
 }
-
-module.exports = ErrorResponse;

@@ -12,11 +12,11 @@
   },
   "include": [
     "./backend/src/**/*",
-    "env.d.ts",
   ],
   "exclude": [
     "node_modules",
     ".vscode"
-  ]
+  ],
+  "files":["env.d.ts","index.d.ts"]
 }
 

@@ -1,14 +1,14 @@
 import express from "express";
 const router = express.Router();
-let { isAuthenticated, isAdmin } = require("../middleware/auth");
-let {
+import { isAuthenticated, isAdmin } from "../middleware/auth";
+import {
   createTask,
   singleTask,
   myTask,
   updateTask,
   deleteTask,
   showTasks,
-} = require("../controllers/taskController");
+} from "../controllers/taskController";
 
 //task routes
 router.post("/tasks/create", isAuthenticated, isAdmin, createTask); // /api/tasks/create
@@ -18,4 +18,4 @@ router.get("/mytask", isAuthenticated, myTask); // /api/mytask
 router.put("/tasks/admin/edit/:task_id", isAuthenticated, updateTask); // /api/tasks/admin/edit/task_id
 router.delete("/tasks/delete/:task_id", isAuthenticated, isAdmin, deleteTask); // /api/tasks/delete/task_id
 
-module.exports = router;
+export { router as taskRoutes };

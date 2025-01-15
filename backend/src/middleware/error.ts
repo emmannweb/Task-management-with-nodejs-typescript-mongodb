@@ -1,5 +1,4 @@
-let errorResponse = require("../utils/errorResponse");
-
+import { ErrorResponse } from "../utils/errorResponse";
 import { ErrorRequestHandler } from "express";
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -8,13 +7,13 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   if (err.name === "CastError") {
     const message = `Ressource not found ${err.value}`;
-    error = new errorResponse(message, 404);
+    error = new ErrorResponse(message, 404);
   }
 
   //Mongoose duplicate value
   if (err.code === 11000) {
     const message = "Duplicate field value entered";
-    error = new errorResponse(message, 400);
+    error = new ErrorResponse(message, 400);
   }
 
   //Mongoose validation error
@@ -22,7 +21,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     const message = Object.values(err.errors).map(
       (val: any) => " " + val.message
     );
-    error = new errorResponse(message, 400);
+    error = new ErrorResponse(message.join(","), 400);
   }
 
   res.status(error.codeStatus || 500).json({
@@ -31,4 +30,4 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   });
 };
 
-module.exports = errorHandler;
+export { errorHandler };

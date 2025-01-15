@@ -33,4 +33,5 @@ const taskSchema = new Schema<ITask>(
   { timestamps: true }
 );
 
-module.exports = mongoose.model<ITask>("Task", taskSchema);
+const Task = mongoose.model<ITask>("Task", taskSchema);
+export { Task };

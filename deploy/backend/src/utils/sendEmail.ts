@@ -35,4 +35,4 @@ const sendEmail = async (options: OptionsValues) => {
   console.log("Message sent: %s", info.messageId);
 };
 
-module.exports = sendEmail;
+export { sendEmail };

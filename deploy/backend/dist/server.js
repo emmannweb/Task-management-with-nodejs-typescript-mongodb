@@ -21,11 +21,11 @@ app.set("trust proxy", 1);
 // app.get("/", (req: Request, res: Response) => {
 //   res.send("Hello from Node js");
 // });
+const error_1 = require("./middleware/error");
 // import routes
-let handleError = require("./middleware/error");
-let authRoutes = require("./routes/authRoute");
-let userRoutes = require("./routes/userRoute");
-let taskRoutes = require("./routes/taskRoute");
+const authRoute_1 = require("./routes/authRoute");
+const userRoute_1 = require("./routes/userRoute");
+const taskRoute_1 = require("./routes/taskRoute");
 mongoose_1.default
     .connect(process.env.DATABASE)
     .then(() => console.log("DB connected"))
@@ -59,11 +59,11 @@ const limiter = (0, express_rate_limit_1.default)({
 });
 app.use(limiter);
 //route middleware
-app.use("/api", authRoutes);
-app.use("/api", userRoutes);
-app.use("/api", taskRoutes);
+app.use("/api", authRoute_1.authRoutes);
+app.use("/api", userRoute_1.userRoutes);
+app.use("/api", taskRoute_1.taskRoutes);
 //error middleware
-app.use(handleError);
+app.use(error_1.errorHandler);
 __dirname = path_1.default.resolve();
 if (process.env.NODE_ENV === "production") {
     app.use(express_1.default.static(path_1.default.join(__dirname, "/frontend/build")));

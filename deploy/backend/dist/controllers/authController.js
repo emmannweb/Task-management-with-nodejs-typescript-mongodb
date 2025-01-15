@@ -15,13 +15,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -32,20 +42,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-let User = require("../models/userModel");
-let errorResponse = require("../utils/errorResponse");
-let sendEmail = require("../utils/sendEmail");
+exports.resetPassword = exports.forgetPassword = exports.userProfile = exports.logout = exports.signin = exports.signup = void 0;
+const userModel_1 = require("../models/userModel");
+const errorResponse_1 = require("../utils/errorResponse");
+const sendEmail_1 = require("../utils/sendEmail");
 const crypto = __importStar(require("crypto"));
-exports.signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
-    const userExist = yield User.findOne({ email });
+    const userExist = yield userModel_1.User.findOne({ email });
     if (userExist) {
-        return next(new errorResponse("E-mail already registred", 400));
+        return next(new errorResponse_1.ErrorResponse("E-mail already registred", 400));
     }
     try {
         req.body.role = "user"; // this is to prevent anyone creating an admin user.
         req.body.active = false; // this is to prevent anyone activate an user.
-        const user = yield User.create(req.body);
+        const user = yield userModel_1.User.create(req.body);
         res.status(201).json({
             success: true,
             user,
@@ -55,25 +66,26 @@ exports.signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         next(error);
     }
 });
-exports.signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.signup = signup;
+const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         //validation
         if (!email) {
-            return next(new errorResponse("please add email", 403));
+            return next(new errorResponse_1.ErrorResponse("please add email", 403));
         }
         if (!password) {
-            return next(new errorResponse("Please add  password", 403));
+            return next(new errorResponse_1.ErrorResponse("Please add  password", 403));
         }
         //check user email
-        const user = yield User.findOne({ email });
+        const user = yield userModel_1.User.findOne({ email });
         if (!user) {
-            return next(new errorResponse("Invalid credentials", 400));
+            return next(new errorResponse_1.ErrorResponse("Invalid credentials", 400));
         }
         //check password
         const isMatched = yield user.comparePassword(password);
         if (!isMatched) {
-            return next(new errorResponse("Invalid credentials", 400));
+            return next(new errorResponse_1.ErrorResponse("Invalid credentials", 400));
         }
         sendTokenResponse(user, 200, res);
     }
@@ -81,6 +93,7 @@ exports.signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         next(error);
     }
 });
+exports.signin = signin;
 const sendTokenResponse = (user, codeStatus, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = yield user.getJwtToken();
     const options = { maxAge: 60 * 60 * 1000, httpOnly: true };
@@ -95,27 +108,29 @@ const sendTokenResponse = (user, codeStatus, res) => __awaiter(void 0, void 0, v
     });
 });
 //log out
-exports.logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.clearCookie("token");
     res.status(200).json({
         success: true,
         message: "logged out",
     });
 });
+exports.logout = logout;
 //user profile
-exports.userProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const userProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const user = yield User.findById((_a = req.user) === null || _a === void 0 ? void 0 : _a.id).select("-password");
+    const user = yield userModel_1.User.findById((_a = req.user) === null || _a === void 0 ? void 0 : _a.id).select("-password");
     res.status(200).json({
         success: true,
         user,
     });
 });
+exports.userProfile = userProfile;
 //FORGET PASSWORD
-exports.forgetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User.findOne({ email: req.body.email });
+const forgetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield userModel_1.User.findOne({ email: req.body.email });
     if (!user) {
-        return next(new errorResponse("there is no user with this e-mail", 404));
+        return next(new errorResponse_1.ErrorResponse("there is no user with this e-mail", 404));
     }
     // get reset token
     const resetToken = user.getResetPasswordToken();
@@ -127,7 +142,7 @@ exports.forgetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, f
   <a  rel="noopener noreferrer" target="_blank" href=${resetUrl}>${resetUrl}</a>
   <br/> <br/>N.B: The link will expire in 10 minutes, if it wasn't you, ignore this email.`;
     try {
-        yield sendEmail({
+        yield (0, sendEmail_1.sendEmail)({
             email: user.email,
             subject: "Reset password",
             message,
@@ -145,20 +160,21 @@ exports.forgetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         return next(error);
     }
 });
+exports.forgetPassword = forgetPassword;
 //RESET PASSWORD
-exports.resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     //hash token
     const resetPasswordToken = crypto
         .createHash("sha256")
         .update(req.params.resettoken)
         .digest("hex");
     try {
-        const user = yield User.findOne({
+        const user = yield userModel_1.User.findOne({
             resetPasswordToken,
             resetPasswordExpire: { $gt: Date.now() },
         });
         if (!user) {
-            return next(new errorResponse("Link expired", 400));
+            return next(new errorResponse_1.ErrorResponse("Link expired", 400));
         }
         // set new password
         user.password = req.body.password;
@@ -176,3 +192,4 @@ exports.resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         return next(error);
     }
 });
+exports.resetPassword = resetPassword;

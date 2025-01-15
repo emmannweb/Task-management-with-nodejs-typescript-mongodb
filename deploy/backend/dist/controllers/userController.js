@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-let User = require("../models/userModel");
+exports.deleteUser = exports.editUser = exports.singleUser = exports.allUsers = void 0;
+const userModel_1 = require("../models/userModel");
 //load all users
-exports.allUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const allUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield User.find().sort({ createdAt: -1 }).select("-password");
+        const users = yield userModel_1.User.find().sort({ createdAt: -1 }).select("-password");
         res.status(200).json({
             success: true,
             users,
@@ -24,10 +25,11 @@ exports.allUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         return next(error);
     }
 });
+exports.allUsers = allUsers;
 //show single user
-exports.singleUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const singleUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield User.findById(req.params.id).select("-password");
+        const user = yield userModel_1.User.findById(req.params.id).select("-password");
         res.status(200).json({
             success: true,
             user,
@@ -38,10 +40,11 @@ exports.singleUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         return next(error);
     }
 });
+exports.singleUser = singleUser;
 //edit single user
-exports.editUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const editUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield User.findByIdAndUpdate(req.params.id, req.body, {
+        const user = yield userModel_1.User.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
         });
         res.status(200).json({
@@ -54,10 +57,11 @@ exports.editUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         return next(error);
     }
 });
+exports.editUser = editUser;
 //delete user
-exports.deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield User.deleteOne({ _id: req.params.id });
+        const user = yield userModel_1.User.deleteOne({ _id: req.params.id });
         res.status(200).json({
             success: true,
             message: "user deleted",
@@ -68,3 +72,4 @@ exports.deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         return next(error);
     }
 });
+exports.deleteUser = deleteUser;
