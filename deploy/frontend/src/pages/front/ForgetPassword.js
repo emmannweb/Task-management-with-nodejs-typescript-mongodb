@@ -45,7 +45,7 @@ const ForgetPassword = () => {
   });
 
   // send email method
-  const sendEmail = async () => {
+  const sendEmail = async (values) => {
     setLoading(true);
     try {
       const { data } = await axios.post("/api/users/forgetpassword", values);
